@@ -85,7 +85,7 @@ export function Nav() {
         {/* Desktop-Navigation */}
         <nav className="hidden md:flex items-stretch h-16 flex-1">
           {navLinks.map(({ href, labelKey }) => {
-            const isActive = pathname === href || (href !== '/' && pathname.startsWith(href))
+            const isActive = pathname === href || pathname.startsWith(href + '/')
             return (
               <Link
                 key={href}
@@ -152,7 +152,7 @@ export function Nav() {
           style={{ boxShadow: '0 8px 24px rgba(44,62,80,0.10)' }}
         >
           {navLinks.map(({ href, labelKey }) => {
-            const isActive = pathname === href || (href !== '/' && pathname.startsWith(href))
+            const isActive = pathname === href || pathname.startsWith(href + '/')
             return (
               <Link
                 key={href}
