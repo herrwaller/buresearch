@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "research": "Forschung",
+    "faculty": "Lehrende",
+    "repository": "Publikationen",
+    "paradigm": "Forschungsparadigma",
+    "hub": "Eurasisches Zentrum",
+    "login": "Anmelden",
+    "dashboard": "Dashboard",
+    "admin": "Admin"
+  },
+  "home": {
+    "headline": "Forschung an der Brand University",
+    "subheadline": "Transdisziplinäre Forschung an der Schnittstelle von Wissenschaft, Kunst und Kultur.",
+    "facultyTitle": "Lehrende & Forschungsgruppen",
+    "viewProfile": "Profil ansehen",
+    "researchFocus": "Forschungsschwerpunkte"
+  },
+  "professor": {
+    "publications": "Publikationen",
+    "news": "News & Aktivitäten",
+    "media": "Medien",
+    "researchFocus": "Forschungscluster",
+    "contact": "Kontakt",
+    "backToFaculty": "Zurück zur Übersicht"
+  },
+  "repository": {
+    "title": "Publikationsdatenbank",
+    "subtitle": "Durchsuchbare Datenbank aller Forschungsoutputs.",
+    "filterYear": "Jahr",
+    "filterAuthor": "Autor",
+    "filterDiscipline": "Disziplin",
+    "filterType": "Typ",
+    "allYears": "Alle Jahre",
+    "allAuthors": "Alle Autoren",
+    "allDisciplines": "Alle Disziplinen",
+    "allTypes": "Alle Typen",
+    "paper": "Zeitschriftenartikel",
+    "monograph": "Monographie",
+    "collection": "Sammelband",
+    "science": "Wissenschaft",
+    "arts": "Kunst",
+    "noDoi": "Kein DOI",
+    "noResults": "Keine Publikationen gefunden."
+  },
+  "paradigm": {
+    "title": "Forschungsparadigma",
+    "subtitle": "Methodik & Transdisziplinarität an der Brand University"
+  },
+  "hub": {
+    "title": "Eurasisches Forschungszentrum",
+    "subtitle": "Deutsch-Chinesische Forschungskooperationen"
+  },
+  "login": {
+    "title": "Anmelden",
+    "subtitle": "Zugang zur BU Research-Plattform",
+    "notice": "Geben Sie Ihre BU-E-Mail-Adresse ein, um einen Login-Link zu erhalten."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "profile": "Mein Profil",
+    "publications": "Publikationen",
+    "projects": "Forschungsprojekte",
+    "exhibitions": "Ausstellungen",
+    "awards": "Auszeichnungen",
+    "news": "News",
+    "media": "Medien",
+    "save": "Speichern",
+    "saving": "Wird gespeichert...",
+    "saved": "Gespeichert",
+    "cancel": "Abbrechen",
+    "add": "Hinzufügen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "confirmDelete": "Diesen Eintrag wirklich löschen?",
+    "upload": "Hochladen",
+    "uploading": "Wird hochgeladen...",
+    "published": "Veröffentlicht",
+    "draft": "Entwurf",
+    "publish": "Veröffentlichen",
+    "unpublish": "Zurückziehen"
+  },
+  "admin": {
+    "title": "Admin-Panel",
+    "users": "Nutzer",
+    "profiles": "Profile",
+    "role": "Rolle",
+    "professor": "Professor",
+    "admin": "Admin",
+    "changeRole": "Rolle ändern",
+    "publishProfile": "Profil veröffentlichen",
+    "unpublishProfile": "Profil zurückziehen"
+  },
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Ein Fehler ist aufgetreten.",
+    "notFound": "Nicht gefunden.",
+    "backHome": "Zur Startseite"
+  }
+}

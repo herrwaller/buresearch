@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "research": "研究",
+    "faculty": "教师",
+    "repository": "文献库",
+    "paradigm": "研究范式",
+    "hub": "欧亚研究中心",
+    "login": "登录",
+    "dashboard": "工作台",
+    "admin": "管理"
+  },
+  "home": {
+    "headline": "品牌大学研究平台",
+    "subheadline": "跨学科探索——科学、艺术与文化的交汇",
+    "facultyTitle": "教师与研究团队",
+    "viewProfile": "查看主页",
+    "researchFocus": "研究方向"
+  },
+  "professor": {
+    "publications": "出版物",
+    "news": "新闻与动态",
+    "media": "媒体",
+    "researchFocus": "研究集群",
+    "contact": "联系方式",
+    "backToFaculty": "返回教师列表"
+  },
+  "repository": {
+    "title": "出版物库",
+    "subtitle": "跨学科研究成果数据库",
+    "filterYear": "年份",
+    "filterAuthor": "作者",
+    "filterDiscipline": "学科",
+    "filterType": "类型",
+    "allYears": "所有年份",
+    "allAuthors": "所有作者",
+    "allDisciplines": "所有学科",
+    "allTypes": "所有类型",
+    "paper": "期刊论文",
+    "monograph": "专著",
+    "collection": "编著",
+    "science": "科学",
+    "arts": "艺术",
+    "noDoi": "无DOI",
+    "noResults": "没有符合条件的出版物。"
+  },
+  "paradigm": {
+    "title": "研究范式",
+    "subtitle": "品牌大学的方法论与跨学科研究"
+  },
+  "hub": {
+    "title": "欧亚研究中心",
+    "subtitle": "中德研究合作"
+  },
+  "login": {
+    "title": "登录",
+    "subtitle": "访问品牌大学研究平台",
+    "notice": "请输入您的BU邮箱地址，我们将发送登录链接。"
+  },
+  "dashboard": {
+    "title": "工作台",
+    "profile": "我的主页",
+    "publications": "出版物",
+    "projects": "科研项目",
+    "exhibitions": "展览",
+    "awards": "奖项",
+    "news": "新闻",
+    "media": "媒体",
+    "save": "保存更改",
+    "saving": "保存中...",
+    "saved": "已保存",
+    "cancel": "取消",
+    "add": "新增",
+    "edit": "编辑",
+    "delete": "删除",
+    "confirmDelete": "确定要删除此项吗？",
+    "upload": "上传",
+    "uploading": "上传中...",
+    "published": "已发布",
+    "draft": "草稿",
+    "publish": "发布",
+    "unpublish": "取消发布"
+  },
+  "admin": {
+    "title": "管理面板",
+    "users": "用户",
+    "profiles": "主页",
+    "role": "角色",
+    "professor": "教授",
+    "admin": "管理员",
+    "changeRole": "更改角色",
+    "publishProfile": "发布主页",
+    "unpublishProfile": "取消发布"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "出现错误。",
+    "notFound": "未找到。",
+    "backHome": "返回首页"
+  }
+}

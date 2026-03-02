@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "research": "Research",
+    "faculty": "Faculty",
+    "repository": "Repository",
+    "paradigm": "Research Paradigm",
+    "hub": "Eurasian Hub",
+    "login": "Login",
+    "dashboard": "Dashboard",
+    "admin": "Admin"
+  },
+  "home": {
+    "headline": "Research at Brand University",
+    "subheadline": "Transdisciplinary inquiry at the intersection of science, arts, and culture.",
+    "facultyTitle": "Faculty & Research Groups",
+    "viewProfile": "View Profile",
+    "researchFocus": "Research Focus"
+  },
+  "professor": {
+    "publications": "Publications",
+    "news": "News & Activities",
+    "media": "Media",
+    "researchFocus": "Research Cluster",
+    "contact": "Contact",
+    "backToFaculty": "Back to Faculty"
+  },
+  "repository": {
+    "title": "Publication Repository",
+    "subtitle": "Searchable database of research output across all disciplines.",
+    "filterYear": "Year",
+    "filterAuthor": "Author",
+    "filterDiscipline": "Discipline",
+    "filterType": "Type",
+    "allYears": "All Years",
+    "allAuthors": "All Authors",
+    "allDisciplines": "All Disciplines",
+    "allTypes": "All Types",
+    "paper": "Journal Article",
+    "monograph": "Monograph",
+    "collection": "Edited Collection",
+    "science": "Science",
+    "arts": "Arts",
+    "noDoi": "No DOI",
+    "noResults": "No publications match your filters."
+  },
+  "paradigm": {
+    "title": "Research Paradigm",
+    "subtitle": "Methodology & Transdisciplinarity at Brand University"
+  },
+  "hub": {
+    "title": "Eurasian Research Hub",
+    "subtitle": "Sino-German Research Cooperations"
+  },
+  "login": {
+    "title": "Sign In",
+    "subtitle": "Access the Brand University Research Platform",
+    "notice": "Enter your BU email address to receive a login link."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "profile": "My Profile",
+    "publications": "Publications",
+    "projects": "Research Projects",
+    "exhibitions": "Exhibitions",
+    "awards": "Awards",
+    "news": "News",
+    "media": "Media",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "cancel": "Cancel",
+    "add": "Add New",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete this item?",
+    "upload": "Upload",
+    "uploading": "Uploading...",
+    "published": "Published",
+    "draft": "Draft",
+    "publish": "Publish",
+    "unpublish": "Unpublish"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "users": "Users",
+    "profiles": "Profiles",
+    "role": "Role",
+    "professor": "Professor",
+    "admin": "Admin",
+    "changeRole": "Change Role",
+    "publishProfile": "Publish Profile",
+    "unpublishProfile": "Unpublish Profile"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong.",
+    "notFound": "Not found.",
+    "backHome": "Back to Home"
+  }
+}
