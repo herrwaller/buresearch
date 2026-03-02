@@ -24,7 +24,7 @@ function HamburgerIcon({ open }: { open: boolean }) {
 
 const navLinks = [
   { href: '/research-paradigm', labelKey: 'paradigm'  },
-  { href: '/',                  labelKey: 'faculty'    },
+  { href: '/faculty',           labelKey: 'faculty'    },
   { href: '/eurasian-hub',      labelKey: 'hub'        },
   { href: '/repository',        labelKey: 'repository' },
 ] as const
