@@ -39,8 +39,9 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
   if (error || !data.user) {
-    console.error('[auth/callback] exchangeCodeForSession failed:', error?.message, error?.status)
-    return NextResponse.redirect(`${origin}/en/login?error=auth_error&detail=${encodeURIComponent(error?.message ?? 'no_user')}`)
+    const hasVerifier = request.cookies.getAll().some(c => c.name.includes('code-verifier'))
+    console.error('[auth/callback] exchangeCodeForSession failed:', error?.message, '| has_verifier:', hasVerifier)
+    return NextResponse.redirect(`${origin}/en/login?error=auth_error&detail=${encodeURIComponent(error?.message ?? 'no_user')}&has_verifier=${hasVerifier}`)
   }
 
   // Create profile row if this is the first login
