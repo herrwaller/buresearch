@@ -39,7 +39,8 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
   if (error || !data.user) {
-    return NextResponse.redirect(`${origin}/en/login?error=auth_error`)
+    console.error('[auth/callback] exchangeCodeForSession failed:', error?.message, error?.status)
+    return NextResponse.redirect(`${origin}/en/login?error=auth_error&detail=${encodeURIComponent(error?.message ?? 'no_user')}`)
   }
 
   // Create profile row if this is the first login
