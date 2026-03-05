@@ -486,3 +486,10 @@ CREATE POLICY "Self manage awards"
 CREATE POLICY "Admin all awards"
   ON public.awards FOR ALL TO authenticated
   USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- ----------------------------------------------------------------
+-- 13. PUBLICATION VOLUME/ISSUE/PAGES (run once in Supabase SQL Editor)
+-- ----------------------------------------------------------------
+ALTER TABLE public.publications ADD COLUMN IF NOT EXISTS volume text;
+ALTER TABLE public.publications ADD COLUMN IF NOT EXISTS issue  text;
+ALTER TABLE public.publications ADD COLUMN IF NOT EXISTS pages  text;

@@ -61,6 +61,9 @@ export interface Publication {
   discipline: 'science' | 'arts'
   abstract: string | null
   journal: string | null
+  volume: string | null
+  issue: string | null
+  pages: string | null
   is_featured: boolean
   created_at: string
 }

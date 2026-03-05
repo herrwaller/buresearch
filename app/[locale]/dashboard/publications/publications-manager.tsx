@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -31,11 +31,18 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import type { Publication } from '@/lib/types/database'
 
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
 type FormState = {
   title: string
   authors: string
   year: string
   journal: string
+  volume: string
+  issue: string
+  pages: string
   doi: string
   url: string
   type: 'paper' | 'monograph' | 'collection'
@@ -49,6 +56,9 @@ const empty: FormState = {
   authors: '',
   year: String(new Date().getFullYear()),
   journal: '',
+  volume: '',
+  issue: '',
+  pages: '',
   doi: '',
   url: '',
   type: 'paper',
@@ -56,6 +66,89 @@ const empty: FormState = {
   abstract: '',
   is_featured: false,
 }
+
+// ---------------------------------------------------------------------------
+// CSV helpers
+// ---------------------------------------------------------------------------
+
+const CSV_HEADERS = 'authors;year;title;journal;volume;issue;pages;doi;url;type;discipline;is_featured;abstract'
+
+/** Escape a single field for semicolon-delimited CSV */
+function escapeField(value: string): string {
+  if (value.includes(';') || value.includes('"') || value.includes('\n')) {
+    return '"' + value.replace(/"/g, '""') + '"'
+  }
+  return value
+}
+
+/** Convert a Publication row to a CSV line */
+function pubToCsvRow(pub: Publication): string {
+  const fields = [
+    pub.authors.join(', '),
+    String(pub.year),
+    pub.title,
+    pub.journal ?? '',
+    pub.volume ?? '',
+    pub.issue ?? '',
+    pub.pages ?? '',
+    pub.doi ?? '',
+    pub.url ?? '',
+    pub.type,
+    pub.discipline,
+    pub.is_featured ? 'true' : 'false',
+    pub.abstract ?? '',
+  ]
+  return fields.map(escapeField).join(';')
+}
+
+/** Minimal CSV parser for semicolon-delimited files with optional quoted fields */
+function parseCsvLine(line: string): string[] {
+  const fields: string[] = []
+  let current = ''
+  let inQuotes = false
+
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i]
+    if (inQuotes) {
+      if (ch === '"') {
+        // Escaped quote?
+        if (i + 1 < line.length && line[i + 1] === '"') {
+          current += '"'
+          i++
+        } else {
+          inQuotes = false
+        }
+      } else {
+        current += ch
+      }
+    } else {
+      if (ch === '"') {
+        inQuotes = true
+      } else if (ch === ';') {
+        fields.push(current)
+        current = ''
+      } else {
+        current += ch
+      }
+    }
+  }
+  fields.push(current)
+  return fields
+}
+
+function triggerDownload(content: string, filename: string) {
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 
 export function PublicationsManager({
   publications,
@@ -66,8 +159,11 @@ export function PublicationsManager({
 }) {
   const supabase = createClient()
   const router = useRouter()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   const [open, setOpen] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [importing, setImporting] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
   const [form, setForm] = useState<FormState>(empty)
 
@@ -87,6 +183,9 @@ export function PublicationsManager({
       authors: pub.authors.join(', '),
       year: String(pub.year),
       journal: pub.journal ?? '',
+      volume: pub.volume ?? '',
+      issue: pub.issue ?? '',
+      pages: pub.pages ?? '',
       doi: pub.doi ?? '',
       url: pub.url ?? '',
       type: pub.type,
@@ -107,6 +206,9 @@ export function PublicationsManager({
       authors: form.authors.split(',').map((a) => a.trim()).filter(Boolean),
       year: parseInt(form.year) || new Date().getFullYear(),
       journal: form.journal || null,
+      volume: form.volume || null,
+      issue: form.issue || null,
+      pages: form.pages || null,
       doi: form.doi || null,
       url: form.url || null,
       type: form.type,
@@ -138,18 +240,222 @@ export function PublicationsManager({
     }
   }
 
+  // -------------------------------------------------------------------------
+  // CSV: Template download
+  // -------------------------------------------------------------------------
+  const handleDownloadTemplate = () => {
+    const example1 = [
+      'Smith, J. A., & Johnson, B. C.',
+      '2023',
+      'Titel des Artikels',
+      'Journal of Research',
+      '45',
+      '3',
+      '123-145',
+      '10.1234/doi',
+      '',
+      'paper',
+      'science',
+      'false',
+      'Optionaler Abstract',
+    ].map(escapeField).join(';')
+
+    const example2 = [
+      'Müller, A.',
+      '2022',
+      'Buchtitel',
+      '',
+      '',
+      '',
+      '',
+      '',
+      'https://example.com',
+      'monograph',
+      'arts',
+      'true',
+      '',
+    ].map(escapeField).join(';')
+
+    triggerDownload([CSV_HEADERS, example1, example2].join('\n'), 'publications_template.csv')
+  }
+
+  // -------------------------------------------------------------------------
+  // CSV: Export
+  // -------------------------------------------------------------------------
+  const handleExport = () => {
+    if (publications.length === 0) {
+      toast.error('No publications to export')
+      return
+    }
+    const rows = publications.map(pubToCsvRow)
+    triggerDownload([CSV_HEADERS, ...rows].join('\n'), 'publications_export.csv')
+    toast.success(`${publications.length} publication${publications.length !== 1 ? 's' : ''} exported`)
+  }
+
+  // -------------------------------------------------------------------------
+  // CSV: Import
+  // -------------------------------------------------------------------------
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    // Reset so the same file can be re-selected after fixing errors
+    e.target.value = ''
+
+    setImporting(true)
+
+    const text = await file.text()
+    const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(Boolean)
+
+    if (lines.length < 2) {
+      toast.error('CSV is empty or contains only a header row')
+      setImporting(false)
+      return
+    }
+
+    // Skip header row
+    const dataLines = lines.slice(1)
+    const toInsert: object[] = []
+    const errors: string[] = []
+
+    dataLines.forEach((line, idx) => {
+      const rowNum = idx + 2 // 1-based, accounting for header
+      const fields = parseCsvLine(line)
+
+      const [
+        authors_raw,
+        year_raw,
+        title_raw,
+        journal_raw,
+        volume_raw,
+        issue_raw,
+        pages_raw,
+        doi_raw,
+        url_raw,
+        type_raw,
+        discipline_raw,
+        is_featured_raw,
+        abstract_raw,
+      ] = fields
+
+      const authorsList = (authors_raw ?? '').split(',').map((a) => a.trim()).filter(Boolean)
+      const year = parseInt(year_raw ?? '')
+      const title = (title_raw ?? '').trim()
+      const type = (type_raw ?? '').trim() as Publication['type']
+      const discipline = (discipline_raw ?? '').trim() as Publication['discipline']
+
+      if (!title) {
+        errors.push(`Row ${rowNum}: missing title`)
+        return
+      }
+      if (authorsList.length === 0) {
+        errors.push(`Row ${rowNum}: missing authors`)
+        return
+      }
+      if (!year || isNaN(year)) {
+        errors.push(`Row ${rowNum}: invalid year "${year_raw}"`)
+        return
+      }
+      if (!['paper', 'monograph', 'collection'].includes(type)) {
+        errors.push(`Row ${rowNum}: invalid type "${type_raw}" (must be paper|monograph|collection)`)
+        return
+      }
+      if (!['science', 'arts'].includes(discipline)) {
+        errors.push(`Row ${rowNum}: invalid discipline "${discipline_raw}" (must be science|arts)`)
+        return
+      }
+
+      toInsert.push({
+        id: crypto.randomUUID(),
+        profile_id: profileId,
+        title,
+        authors: authorsList,
+        year,
+        journal: journal_raw?.trim() || null,
+        volume: volume_raw?.trim() || null,
+        issue: issue_raw?.trim() || null,
+        pages: pages_raw?.trim() || null,
+        doi: doi_raw?.trim() || null,
+        url: url_raw?.trim() || null,
+        type,
+        discipline,
+        is_featured: is_featured_raw?.trim().toLowerCase() === 'true',
+        abstract: abstract_raw?.trim() || null,
+      })
+    })
+
+    if (toInsert.length > 0) {
+      const { error } = await supabase.from('publications').insert(toInsert)
+      if (error) {
+        toast.error('Import failed: ' + error.message)
+        setImporting(false)
+        return
+      }
+      router.refresh()
+    }
+
+    const successMsg = `${toInsert.length} publication${toInsert.length !== 1 ? 's' : ''} imported`
+    if (errors.length > 0) {
+      toast.warning(`${successMsg}, ${errors.length} error${errors.length !== 1 ? 's' : ''}: ${errors.join(' · ')}`)
+    } else {
+      toast.success(successMsg)
+    }
+
+    setImporting(false)
+  }
+
+  // -------------------------------------------------------------------------
+  // Render
+  // -------------------------------------------------------------------------
   return (
     <>
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-xs text-muted-foreground">{publications.length} publication{publications.length !== 1 ? 's' : ''}</p>
-        <Button onClick={openNew} size="sm" className="text-xs bg-primary text-primary-foreground">
-          + Add Publication
-        </Button>
+      {/* Hidden file input for CSV import */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".csv"
+        className="hidden"
+        onChange={handleImportFile}
+      />
+
+      <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
+        <p className="text-xs text-muted-foreground">
+          {publications.length} publication{publications.length !== 1 ? 's' : ''}
+        </p>
+        <div className="flex gap-2 flex-wrap">
+          <Button onClick={openNew} size="sm" className="text-xs bg-primary text-primary-foreground">
+            + Add Publication
+          </Button>
+          <Button
+            onClick={handleDownloadTemplate}
+            size="sm"
+            variant="outline"
+            className="text-xs border-border"
+          >
+            ↓ Template
+          </Button>
+          <Button
+            onClick={() => fileInputRef.current?.click()}
+            size="sm"
+            variant="outline"
+            className="text-xs border-border"
+            disabled={importing}
+          >
+            {importing ? 'Importing…' : '↑ Import CSV'}
+          </Button>
+          <Button
+            onClick={handleExport}
+            size="sm"
+            variant="outline"
+            className="text-xs border-border"
+          >
+            ↓ Export CSV
+          </Button>
+        </div>
       </div>
 
       {publications.length === 0 ? (
         <div className="border border-border rounded p-10 text-center text-muted-foreground text-sm">
-          No publications yet. Add your first one.
+          No publications yet. Add your first one or import a CSV.
         </div>
       ) : (
         <div className="border border-border rounded overflow-hidden">
@@ -217,6 +523,17 @@ export function PublicationsManager({
               </Field>
               <Field label="Journal / Publisher">
                 <Input value={form.journal} onChange={(e) => set('journal', e.target.value)} className="text-sm bg-secondary border-border" />
+              </Field>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <Field label="Volume">
+                <Input value={form.volume} onChange={(e) => set('volume', e.target.value)} className="text-sm bg-secondary border-border" />
+              </Field>
+              <Field label="Issue">
+                <Input value={form.issue} onChange={(e) => set('issue', e.target.value)} className="text-sm bg-secondary border-border" />
+              </Field>
+              <Field label="Pages">
+                <Input value={form.pages} onChange={(e) => set('pages', e.target.value)} className="text-sm bg-secondary border-border" placeholder="123-145" />
               </Field>
             </div>
             <div className="grid grid-cols-2 gap-3">
