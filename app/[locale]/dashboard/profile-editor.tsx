@@ -227,9 +227,9 @@ export function ProfileEditor({ profile, userId }: { profile: Profile | null; us
     <div className="space-y-8">
       {/* Warnung wenn Slug fehlt */}
       {!form.slug && (
-        <div className="rounded-sm border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-300">
+        <div className="rounded-sm border border-yellow-500/40 bg-yellow-400/90 px-4 py-3 text-sm text-black">
           <p className="font-bold mb-0.5">URL-Slug fehlt</p>
-          <p className="text-xs text-yellow-300/80">
+          <p className="text-xs text-black/70">
             Ohne URL-Slug ist dein Profil nicht erreichbar. Trage unten einen Slug ein (z.B.{' '}
             <span className="font-mono">mueller</span> → <span className="font-mono">/mueller</span>)
             und speichere anschließend.
