@@ -210,8 +210,33 @@ export function ProfileEditor({ profile, userId }: { profile: Profile | null; us
     </div>
   )
 
+  const generateSlug = () => {
+    const base = form.name_en || form.name_de || ''
+    if (!base) return
+    const slug = base
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+    handleChange('slug', slug)
+  }
+
   return (
     <div className="space-y-8">
+      {/* Warnung wenn Slug fehlt */}
+      {!form.slug && (
+        <div className="rounded-sm border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-300">
+          <p className="font-bold mb-0.5">URL-Slug fehlt</p>
+          <p className="text-xs text-yellow-300/80">
+            Ohne URL-Slug ist dein Profil nicht erreichbar. Trage unten einen Slug ein (z.B.{' '}
+            <span className="font-mono">mueller</span> → <span className="font-mono">/mueller</span>)
+            und speichere anschließend.
+          </p>
+        </div>
+      )}
+
       {/* Photo */}
       <div className="flex items-center gap-5">
         <div className="h-20 w-20 rounded-sm overflow-hidden bg-muted shrink-0">
@@ -240,7 +265,31 @@ export function ProfileEditor({ profile, userId }: { profile: Profile | null; us
 
       {/* Basic info */}
       <div className="grid grid-cols-2 gap-4">
-        {field('URL Slug (e.g. mueller)', 'slug')}
+        {/* Slug-Feld manuell für bessere UX */}
+        <div className="space-y-1.5">
+          <Label className={`text-xs ${!form.slug ? 'text-yellow-400 font-bold' : 'text-muted-foreground'}`}>
+            URL Slug{!form.slug && ' *'} (z.B. mueller → /mueller)
+          </Label>
+          <div className="flex gap-1.5">
+            <Input
+              value={form.slug}
+              onChange={(e) => handleChange('slug', e.target.value)}
+              placeholder="z.B. mueller"
+              className={`h-8 text-sm bg-card border-border flex-1 font-mono ${!form.slug ? 'border-yellow-500/60' : ''}`}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={generateSlug}
+              disabled={!form.name_en && !form.name_de}
+              className="h-8 text-xs border-border shrink-0 px-2"
+              title="Aus Name generieren"
+            >
+              Auto
+            </Button>
+          </div>
+        </div>
         {field('Academic Title (Prof. Dr. etc.)', 'title')}
         {field('Email', 'email')}
         {field('Research Focus (comma-separated)', 'research_focus')}

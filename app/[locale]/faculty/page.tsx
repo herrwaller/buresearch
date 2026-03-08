@@ -134,13 +134,15 @@ function ProfessorCard({
 
   return (
     <div className="group relative flex flex-col bg-card p-6 hover:bg-[#f0f7e8] transition-colors border-l-2 border-l-transparent hover:border-l-primary">
-      {/* Card-Link als absolutes Overlay */}
-      <Link
-        href={`/${prof.slug}`}
-        locale={locale as 'en' | 'de' | 'cn'}
-        className="absolute inset-0"
-        aria-label={name}
-      />
+      {/* Card-Link als absolutes Overlay – nur wenn Slug gesetzt */}
+      {prof.slug && (
+        <Link
+          href={`/${prof.slug}`}
+          locale={locale as 'en' | 'de' | 'cn'}
+          className="absolute inset-0"
+          aria-label={name}
+        />
+      )}
 
       {/* Foto */}
       <div className="mb-4 h-14 w-14 overflow-hidden rounded-sm bg-muted shrink-0">
